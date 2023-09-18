@@ -1,11 +1,11 @@
 import { Dispatch } from 'react'
 import { useReducer, createContext, useContext, PropsWithChildren } from 'react'
 
-import { ICredentials } from './services/login'
+import { IUser } from './services/blogs';
 
 const loginReducer = (
-  state: ICredentials,
-  action: { type: string; payload: ICredentials }
+  state: IUser,
+  action: { type: string; payload: IUser }
 ) => {
   switch (action.type) {
     case 'login':
@@ -13,37 +13,34 @@ const loginReducer = (
     case 'logout':
       return action.payload
     case 'reset':
-      return { username: '', password: '' }
+      return undefined
     default:
       return state
   }
 }
 
 const LoginContext = createContext<{
-  loginData: ICredentials
-  loginDataDispatch: Dispatch<{ type: string | null; payload: ICredentials }>
+  loginData: IUser | undefined
+  loginDataDispatch: Dispatch<{ type: string; payload: IUser }>
 }>({
-  loginData: { username: null, password: null },
+  loginData: undefined,
   loginDataDispatch: () => null,
 })
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useMessageValue = () => {
+export const useLoginValue = () => {
   const valueAndDispatch = useContext(LoginContext)
   return valueAndDispatch.loginData
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useMessageDispatch = () => {
+export const useLoginDispatch = () => {
   const valueAndDispatch = useContext(LoginContext)
   return valueAndDispatch.loginDataDispatch
 }
 
 export const LoginContextProvider = (props: PropsWithChildren) => {
-  const [loginData, loginDataDispatch] = useReducer(loginReducer, {
-    username: '',
-    password: '',
-  })
+  const [loginData, loginDataDispatch] = useReducer(loginReducer, undefined)
 
   return (
     <LoginContext.Provider value={{ loginData, loginDataDispatch }}>

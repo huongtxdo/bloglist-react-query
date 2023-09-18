@@ -28,6 +28,7 @@ export interface IUser {
   passwordHash: string
   name: string
   blogs: IBlog
+  token: string
 }
 
 const create = async (newObject: IBlog) => {

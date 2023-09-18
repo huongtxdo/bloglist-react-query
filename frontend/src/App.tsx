@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 // import { useQuery } from '@tanstack/react-query'
 import './index.css'
 
@@ -10,13 +10,15 @@ import NewBlogForm from './components/NewBlogForm.tsx'
 
 import blogService, { IUser } from './services/blogs'
 import loginService from './services/login'
+
 import { useMessageDispatch } from './NotiContext.tsx'
+import { useLoginDispatch, useLoginValue } from './LoginContext.tsx'
 
 const App = () => {
-  const dispatch = useMessageDispatch()
+  const notiDispatch = useMessageDispatch()
+  // const loginDispatch = useLoginDispatch()
+  // const loginValue = useLoginValue()
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState<IUser | null>(null)
 
   useEffect(() => {
@@ -28,28 +30,28 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  // const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault()
 
-    try {
-      const user = await loginService.login({ username, password })
-      blogService.setToken(user.token)
-      window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
+  //   try {
+  //     const user = await loginService.login(loginValue)
+  //     blogService.setToken(user.token)
+  //     window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
 
-      setUser(user)
-      setUsername('')
-      setPassword('')
-      dispatch({ type: 'login', payload: `Login successful!` })
-      setTimeout(() => {
-        dispatch({ type: 'reset', payload: '' })
-      }, 5000)
-    } catch (exception) {
-      dispatch({ type: 'error', payload: `Login failed!` })
-      setTimeout(() => {
-        dispatch({ type: 'reset', payload: '' })
-      }, 5000)
-    }
-  }
+  //     setUser(user)
+  //     setUsername('')
+  //     setPassword('')
+  //     notiDispatch({ type: 'login', payload: `Login successful!` })
+  //     setTimeout(() => {
+  //       notiDispatch({ type: 'reset', payload: '' })
+  //     }, 5000)
+  //   } catch (exception) {
+  //     notiDispatch({ type: 'error', payload: `Login failed!` })
+  //     setTimeout(() => {
+  //       notiDispatch({ type: 'reset', payload: '' })
+  //     }, 5000)
+  //   }
+  // }
 
   const handleLogout = async () => {
     try {
@@ -59,14 +61,14 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
-      dispatch({ type: 'login', payload: `Logout successful!` })
+      notiDispatch({ type: 'login', payload: `Logout successful!` })
       setTimeout(() => {
-        dispatch({ type: 'reset', payload: '' })
+        notiDispatch({ type: 'reset', payload: '' })
       }, 5000)
     } catch (exception) {
-      dispatch({ type: 'login', payload: `Logout failed!` })
+      notiDispatch({ type: 'login', payload: `Logout failed!` })
       setTimeout(() => {
-        dispatch({ type: 'reset', payload: '' })
+        notiDispatch({ type: 'reset', payload: '' })
       }, 5000)
     }
   }
@@ -102,10 +104,7 @@ const App = () => {
 
       {!user && (
         <LoginForm
-          handleSubmit={handleLogin}
-          username={username}
           handleUsername={({ target }) => setUsername(target.value)}
-          password={password}
           handlePassword={({ target }) => setPassword(target.value)}
         />
       )}
