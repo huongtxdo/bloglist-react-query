@@ -4,7 +4,7 @@ import { useReducer, createContext, useContext, PropsWithChildren } from 'react'
 import { IUser } from './services/blogs';
 
 const loginReducer = (
-  state: IUser,
+  state: IUser | undefined,
   action: { type: string; payload: IUser }
 ) => {
   switch (action.type) {

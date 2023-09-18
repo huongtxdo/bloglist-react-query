@@ -8,24 +8,24 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm.tsx'
 
-import blogService, { IUser } from './services/blogs'
-import loginService from './services/login'
+import blogService from './services/blogs'
+// import loginService from './services/login'
 
-import { useMessageDispatch } from './NotiContext.tsx'
-import { useLoginDispatch, useLoginValue } from './LoginContext.tsx'
+// import { useMessageDispatch } from './NotiContext.tsx'
+import { useLoginValue } from './LoginContext.tsx'
 
 const App = () => {
-  const notiDispatch = useMessageDispatch()
+  // const notiDispatch = useMessageDispatch()
   // const loginDispatch = useLoginDispatch()
-  // const loginValue = useLoginValue()
+  const loginValue = useLoginValue()
 
-  const [user, setUser] = useState<IUser | null>(null)
+  // const [user, setUser] = useState<IUser | null>(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      // setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -53,25 +53,25 @@ const App = () => {
   //   }
   // }
 
-  const handleLogout = async () => {
-    try {
-      window.localStorage.removeItem('loggedBloglistUser')
+  // const handleLogout = async () => {
+  //   try {
+  //     window.localStorage.removeItem('loggedBloglistUser')
 
-      blogService.setToken(null)
-      setUser(null)
-      setUsername('')
-      setPassword('')
-      notiDispatch({ type: 'login', payload: `Logout successful!` })
-      setTimeout(() => {
-        notiDispatch({ type: 'reset', payload: '' })
-      }, 5000)
-    } catch (exception) {
-      notiDispatch({ type: 'login', payload: `Logout failed!` })
-      setTimeout(() => {
-        notiDispatch({ type: 'reset', payload: '' })
-      }, 5000)
-    }
-  }
+  //     blogService.setToken(null)
+  //     setUser(null)
+  //     setUsername('')
+  //     setPassword('')
+  //     notiDispatch({ type: 'login', payload: `Logout successful!` })
+  //     setTimeout(() => {
+  //       notiDispatch({ type: 'reset', payload: '' })
+  //     }, 5000)
+  //   } catch (exception) {
+  //     notiDispatch({ type: 'login', payload: `Logout failed!` })
+  //     setTimeout(() => {
+  //       notiDispatch({ type: 'reset', payload: '' })
+  //     }, 5000)
+  //   }
+  // }
 
   // *** FOR TESTING ONLY!!  DELETE EVERYTHING
   /*
@@ -102,18 +102,13 @@ const App = () => {
     <div>
       <Notification />
 
-      {!user && (
-        <LoginForm
-          handleUsername={({ target }) => setUsername(target.value)}
-          handlePassword={({ target }) => setPassword(target.value)}
-        />
-      )}
-      {user && (
+      {!loginValue && <LoginForm />}
+      {loginValue && (
         <div>
           <h2>blogs</h2>
           <p>
-            {user.name} logged in
-            <button onClick={handleLogout}>logout</button>
+            {loginValue.name} logged in
+            {/* <button onClick={handleLogout}>logout</button> */}
           </p>
           <Togglable buttonLabel="create new blog">
             <NewBlogForm />
