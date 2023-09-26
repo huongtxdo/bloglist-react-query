@@ -1,35 +1,46 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 
-import Blog from './Blog'
-import blogService, { IBlog } from '../services/blogs'
-import loginService from '../services/login'
+import { IBlog } from '../types'
+import Togglable from './Togglable'
+import NewBlogForm from './NewBlogForm'
+import blogService from '../services/blogs'
 
 const Blogs = () => {
-  ///////////////////INITIAL DATA LOADING////////////////////
-
-  const queryMultiple = () => {
-    const userRes = useQuery(['user'], () =>
-      loginService.login({ username: '', password: '' })
-    )
-    const blogRes = useQuery(['blogs'], () => blogService.getAll())
-
-    return [userRes, blogRes]
+  const style = {
+    border: 1,
+    borderStyle: 'solid',
+    paddingTop: 5,
+    margin: 5,
   }
 
-  const [userLoading, blogsLoading] = queryMultiple()
+  ///// LOADING DATA /////
 
-  if (userLoading.isLoading) return <div>logging in ...</div>
-  if (blogsLoading.isLoading) return <div>loading data ...</div>
+  const { data: blogsData, isLoading } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: () => blogService.getAll(),
+  })
 
-  const [user, blogs] = [userLoading.data, blogsLoading.data]
+  if (isLoading) return <div>Loading...</div>
+
+  const blogs = blogsData
+
+  if (!blogs) return <></>
 
   return (
-    <div className="blog-list">
+    <div>
+      <Togglable buttonLabel="create new blog">
+        <NewBlogForm />
+      </Togglable>
       {blogs
         .sort((a: IBlog, b: IBlog) => b.likes! - a.likes!)
         .map((blog: IBlog) => (
-          <Blog key={blog.id} user={user} blog={blog} />
+          <div style={style} key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} {blog.author}
+            </Link>
+          </div>
         ))}
     </div>
   )

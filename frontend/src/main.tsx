@@ -5,7 +5,13 @@ import { NotiContextProvider } from './NotiContext'
 import { LoginContextProvider } from './LoginContext'
 import App from './App'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <NotiContextProvider>

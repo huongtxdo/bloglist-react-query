@@ -1,37 +1,42 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
 import loginService from '../services/login'
-import blogService, {IUser} from '../services/blogs'
+import blogService from '../services/blogs'
+import { ICredentials, IUser } from '../types'
 
-// import { useLoginDispatch, useLoginValue } from "../LoginContext"
-import { useMessageDispatch } from '../NotiContext'
-
-// interface ILoginForm {
-//   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-//   username: string
-//   handleUsername: (target: React.ChangeEvent<HTMLInputElement>) => void
-//   password: string
-//   handlePassword: (target: React.ChangeEvent<HTMLInputElement>) => void
-// }
+import { useNotiDispatch } from '../NotiContext'
+import { useLoginDispatch } from '../LoginContext'
 
 const LoginForm = () => {
   const queryClient = useQueryClient()
 
-  const notiDispatch = useMessageDispatch()
-  // const loginValue = useLoginValue()
-  // const loginDispatch = useLoginDispatch()
+  const notiDispatch = useNotiDispatch()
+  const loginDispatch = useLoginDispatch()
 
   ///// MUTATION /////
 
-  const loginMutation = useMutation(loginService.login, {
+  const loginMutation: UseMutationResult<
+    unknown,
+    unknown,
+    ICredentials,
+    unknown
+  > = useMutation(loginService.login, {
     onSuccess: (loginUser: IUser) => {
-      const user: IUser | undefined = queryClient.getQueryData(['user'])
       queryClient.setQueryData(['user'], loginUser)
-      
-      blogService.setToken(user!.token)
-      window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
+      const user: IUser | undefined = queryClient.getQueryData(['user'])
 
+      blogService.setToken(user!.token)
+      // window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
+
+      loginDispatch({
+        type: 'login',
+        payload: user!,
+      })
       notiDispatch({
         type: 'login',
         payload: `Login successful!`,
@@ -41,14 +46,15 @@ const LoginForm = () => {
       }, 5000)
     },
     onError: (e: unknown) => {
-      if (e instanceof AxiosError) notiDispatch({
-        type: 'error',
-        payload: `Login failed`,
-      })
+      if (e instanceof AxiosError)
+        notiDispatch({
+          type: 'error',
+          payload: `Login failed`,
+        })
       setTimeout(() => {
         notiDispatch({ type: 'reset', payload: '' })
       }, 5000)
-    }
+    },
   })
 
   ///// HANDLE LOGIN /////
@@ -63,31 +69,27 @@ const LoginForm = () => {
     const username = elementArray[0].value
     const password = elementArray[1].value
 
-    loginMutation.mutateAsync({username, password})
-
-    const user = await loginService.login({username, password})
-    blogService.setToken(user.token)
-    window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
+    loginMutation.mutateAsync({ username, password })
   }
 
   ///// RETURN /////
   return (
-  <div>
-    <h2>Login</h2>
-    <form onSubmit={handleLogin}>
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         username
-        <input id="username" placeholder='username' />
+        <input id="username" placeholder="username" />
+        <br />
         password
-        <input
-          id="password"
-          type="password"
-          placeholder='password'
-        />
-      <button id="login-button" type="submit">
-        login
-      </button>
-    </form>
-  </div>
-)}
+        <input id="password" type="password" placeholder="password" />
+        <br />
+        <button id="login-button" type="submit">
+          login
+        </button>
+      </form>
+    </div>
+  )
+}
 
 export default LoginForm
+

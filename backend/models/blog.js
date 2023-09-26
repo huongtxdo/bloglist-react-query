@@ -9,6 +9,7 @@ const blogSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+  comments: [String],
 })
 
 blogSchema.set('toJSON', {
@@ -20,3 +21,4 @@ blogSchema.set('toJSON', {
 })
 
 module.exports = model('Blog', blogSchema)
+

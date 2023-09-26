@@ -2,52 +2,55 @@ import { Dispatch } from 'react'
 import { useReducer, createContext, useContext, PropsWithChildren } from 'react'
 
 const notiReducer = (
-  state: string,
+  state: { notiType: string; notiMsg: string },
   action: { type: string; payload: string }
 ) => {
   switch (action.type) {
     case 'login':
-      return action.payload
+      return { notiType: 'notification', notiMsg: action.payload }
     case 'like':
-      return action.payload
+      return { notiType: 'notification', notiMsg: action.payload }
     case 'create':
-      return action.payload
+      return { notiType: 'notification', notiMsg: action.payload }
     case 'delete':
-      return action.payload
+      return { notiType: 'notification', notiMsg: action.payload }
     case 'error':
-      return action.payload
+      return { notiType: 'error', notiMsg: action.payload }
     case 'reset':
-      return ''
+      return { notiType: '', notiMsg: '' }
     default:
       return state
   }
 }
 
 const NotiContext = createContext<{
-  notiMessage: string
-  notiMessageDispatch: Dispatch<{ type: string; payload: string }>
+  noti: { notiType: string; notiMsg: string }
+  notiDispatch: Dispatch<{ type: string; payload: string }>
 }>({
-  notiMessage: '',
-  notiMessageDispatch: () => null,
+  noti: { notiType: '', notiMsg: '' },
+  notiDispatch: () => null,
 })
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useMessageValue = () => {
+export const useNotiValue = () => {
   const valueAndDispatch = useContext(NotiContext)
-  return valueAndDispatch.notiMessage
+  return valueAndDispatch.noti
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useMessageDispatch = () => {
+export const useNotiDispatch = () => {
   const valueAndDispatch = useContext(NotiContext)
-  return valueAndDispatch.notiMessageDispatch
+  return valueAndDispatch.notiDispatch
 }
 
 export const NotiContextProvider = (props: PropsWithChildren) => {
-  const [notiMessage, notiMessageDispatch] = useReducer(notiReducer, '')
+  const [noti, notiDispatch] = useReducer(notiReducer, {
+    notiType: '',
+    notiMsg: '',
+  })
 
   return (
-    <NotiContext.Provider value={{ notiMessage, notiMessageDispatch }}>
+    <NotiContext.Provider value={{ noti, notiDispatch }}>
       {props.children}
     </NotiContext.Provider>
   )

@@ -1,14 +1,9 @@
-import { useMessageValue } from '../NotiContext'
+import { useNotiValue } from '../NotiContext'
 
 const Notification = () => {
-  const errorMessage = useMessageValue()
-  const notification = useMessageValue()
+  const notification = useNotiValue()
 
-  let className = ''
-  if (errorMessage !== '') className = 'error'
-  if (notification !== '') className = 'notification'
-
-  return <div className={className}>{notification}</div>
+  return <div className={notification.notiType}>{notification.notiMsg}</div>
 }
 
 export default Notification

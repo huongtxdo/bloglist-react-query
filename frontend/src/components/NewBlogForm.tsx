@@ -5,29 +5,30 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 
-import blogService, { IBlog } from '../services/blogs'
-import { useMessageDispatch } from '../NotiContext'
+import blogService from '../services/blogs'
+import { IBlog } from '../types'
+import { useNotiDispatch } from '../NotiContext'
 import { AxiosError } from 'axios'
 
 const NewBlogForm = () => {
   const queryClient = useQueryClient()
-  const dispatch = useMessageDispatch()
+  const notiDispatch = useNotiDispatch()
 
   ///// MUTATION /////
 
-  const newBlogMutation: UseMutationResult<unknown, unknown, IBlog, unknown> =
+  const { mutateAsync }: UseMutationResult<unknown, unknown, IBlog, unknown> =
     useMutation(blogService.create, {
       onSuccess: (newBlog: IBlog) => {
         const blogs: IBlog[] | undefined = queryClient.getQueryData(['blogs'])
         queryClient.setQueryData(['blogs'], blogs!.concat(newBlog))
-        dispatch({
+        notiDispatch({
           type: 'create',
           payload: `A new blog '${newBlog.title}' ${
             newBlog.author ? `by ${newBlog.author}` : ''
           } added!`,
         })
         setTimeout(() => {
-          dispatch({ type: 'reset', payload: '' })
+          notiDispatch({ type: 'reset', payload: '' })
         }, 5000)
       },
       onError: (e: unknown) => {
@@ -35,15 +36,15 @@ const NewBlogForm = () => {
           e instanceof AxiosError &&
           e.response?.data.error === 'missingTitleOrUrl'
         ) {
-          dispatch({ type: 'error', payload: 'title and url required' })
+          notiDispatch({ type: 'error', payload: 'title and url required' })
         } else if (
           e instanceof AxiosError &&
           e.response?.data.error === 'unauthorized'
         ) {
-          dispatch({ type: 'error', payload: 'Unauthorized' })
+          notiDispatch({ type: 'error', payload: 'Unauthorized' })
         }
         setTimeout(() => {
-          dispatch({ type: 'reset', payload: '' })
+          notiDispatch({ type: 'reset', payload: '' })
         }, 5000)
       },
     })
@@ -56,7 +57,7 @@ const NewBlogForm = () => {
     // const author = (document.getElementById('author') as HTMLInputElement).value
     // const url = (document.getElementById('url') as HTMLInputElement).value
 
-    // THIS WORKS! Cre: Akiyo Marukawa from Medium
+    // THIS WORKS! Src: Medium
     const target = event.target as HTMLFormElement
     const formElements = target.elements
     const elementArray = [...formElements] as HTMLInputElement[]
@@ -69,11 +70,15 @@ const NewBlogForm = () => {
     // const title = event.target.title.value
     // const author = event.target.author.value
     // const url = event.target.url.value
-    newBlogMutation.mutateAsync({
+    mutateAsync({
       title,
       author,
       url,
     })
+
+    elementArray[0].value = ''
+    elementArray[1].value = ''
+    elementArray[2].value = ''
   }
 
   return (

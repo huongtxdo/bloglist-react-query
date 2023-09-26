@@ -1,29 +1,27 @@
-import { Dispatch } from 'react'
+import { Dispatch, useEffect } from 'react'
 import { useReducer, createContext, useContext, PropsWithChildren } from 'react'
 
-import { IUser } from './services/blogs';
+import { IUser } from './types'
 
 const loginReducer = (
-  state: IUser | undefined,
-  action: { type: string; payload: IUser }
+  state: IUser | null,
+  action: { type: string; payload: IUser | null }
 ) => {
   switch (action.type) {
     case 'login':
       return action.payload
     case 'logout':
-      return action.payload
-    case 'reset':
-      return undefined
+      return null
     default:
       return state
   }
 }
 
 const LoginContext = createContext<{
-  loginData: IUser | undefined
-  loginDataDispatch: Dispatch<{ type: string; payload: IUser }>
+  loginData: IUser | null
+  loginDataDispatch: Dispatch<{ type: string; payload: IUser | null }>
 }>({
-  loginData: undefined,
+  loginData: null,
   loginDataDispatch: () => null,
 })
 
@@ -39,8 +37,25 @@ export const useLoginDispatch = () => {
   return valueAndDispatch.loginDataDispatch
 }
 
+const localStorageLogger = () => {
+  const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+  if (loggedUserJSON) {
+    const user = JSON.parse(loggedUserJSON)
+    return user
+  }
+  return null
+}
+
 export const LoginContextProvider = (props: PropsWithChildren) => {
-  const [loginData, loginDataDispatch] = useReducer(loginReducer, undefined)
+  const [loginData, loginDataDispatch] = useReducer(
+    loginReducer,
+    null,
+    localStorageLogger
+  )
+
+  useEffect(() => {
+    window.localStorage.setItem('loggedBloglistUser', JSON.stringify(loginData))
+  }, [loginData])
 
   return (
     <LoginContext.Provider value={{ loginData, loginDataDispatch }}>

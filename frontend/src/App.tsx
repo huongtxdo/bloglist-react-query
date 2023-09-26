@@ -1,77 +1,19 @@
-import { useState, useEffect } from 'react'
-// import { useQuery } from '@tanstack/react-query'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Nav, Navbar } from 'react-bootstrap'
+
 import './index.css'
-
-import Blogs from './components/Blogs'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import LoginForm from './components/LoginForm'
-import NewBlogForm from './components/NewBlogForm.tsx'
-
-import blogService from './services/blogs'
-// import loginService from './services/login'
-
-// import { useMessageDispatch } from './NotiContext.tsx'
 import { useLoginValue } from './LoginContext.tsx'
 
+import Blogs from './components/Blogs.tsx'
+import Users from './components/Users.tsx'
+import Blog from './components/Blog.tsx'
+import User from './components/User.tsx'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import UserLoggedIn from './components/UserLoggedIn.tsx'
+
 const App = () => {
-  // const notiDispatch = useMessageDispatch()
-  // const loginDispatch = useLoginDispatch()
   const loginValue = useLoginValue()
-
-  // const [user, setUser] = useState<IUser | null>(null)
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      // setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  // const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault()
-
-  //   try {
-  //     const user = await loginService.login(loginValue)
-  //     blogService.setToken(user.token)
-  //     window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
-
-  //     setUser(user)
-  //     setUsername('')
-  //     setPassword('')
-  //     notiDispatch({ type: 'login', payload: `Login successful!` })
-  //     setTimeout(() => {
-  //       notiDispatch({ type: 'reset', payload: '' })
-  //     }, 5000)
-  //   } catch (exception) {
-  //     notiDispatch({ type: 'error', payload: `Login failed!` })
-  //     setTimeout(() => {
-  //       notiDispatch({ type: 'reset', payload: '' })
-  //     }, 5000)
-  //   }
-  // }
-
-  // const handleLogout = async () => {
-  //   try {
-  //     window.localStorage.removeItem('loggedBloglistUser')
-
-  //     blogService.setToken(null)
-  //     setUser(null)
-  //     setUsername('')
-  //     setPassword('')
-  //     notiDispatch({ type: 'login', payload: `Logout successful!` })
-  //     setTimeout(() => {
-  //       notiDispatch({ type: 'reset', payload: '' })
-  //     }, 5000)
-  //   } catch (exception) {
-  //     notiDispatch({ type: 'login', payload: `Logout failed!` })
-  //     setTimeout(() => {
-  //       notiDispatch({ type: 'reset', payload: '' })
-  //     }, 5000)
-  //   }
-  // }
 
   // *** FOR TESTING ONLY!!  DELETE EVERYTHING
   /*
@@ -84,40 +26,51 @@ const App = () => {
   }
   */
 
-  // ///////////////////INITIAL DATA LOADING////////////////////
-
-  // const result = useQuery({
-  //   queryKey: ['blogs'],
-  //   queryFn: () => blogService.getAll(),
-  //   refetchOnWindowFocus: false,
-  // })
-
-  // if (result.isLoading) {
-  //   return <div>loading data...</div>
+  // const style = {
+  //   background: '#bac3d1',
+  //   margin: 'auto',
+  //   width: '467',
+  //   height: 40,
   // }
-
-  // const blogs = result.data
+  const padding = { padding: 5 }
 
   return (
-    <div>
+    <Router>
       <Notification />
 
       {!loginValue && <LoginForm />}
+
       {loginValue && (
-        <div>
-          <h2>blogs</h2>
-          <p>
-            {loginValue.name} logged in
-            {/* <button onClick={handleLogout}>logout</button> */}
-          </p>
-          <Togglable buttonLabel="create new blog">
-            <NewBlogForm />
-          </Togglable>
-          <Blogs />
-          {/* <DeleteAllBlogs /> */}
-        </div>
+        <>
+          <Navbar bg="dark" variant="dark">
+            <Nav className="me-auto">
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/">
+                  Blogs
+                </Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/users">
+                  Users
+                </Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <UserLoggedIn user={loginValue} />
+              </Nav.Link>
+            </Nav>
+          </Navbar>
+
+          <h2>blog app</h2>
+          <br />
+          <Routes>
+            <Route path="/users" element={<Users />} />
+            <Route path="/" element={<Blogs />} />
+            <Route path="/blogs/:id" element={<Blog user={loginValue} />} />
+            <Route path="/users/:id" element={<User />} />
+          </Routes>
+        </>
       )}
-    </div>
+    </Router>
   )
 }
 
