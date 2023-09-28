@@ -34,9 +34,22 @@ const NewBlogForm = () => {
       onError: (e: unknown) => {
         if (
           e instanceof AxiosError &&
-          e.response?.data.error === 'missingTitleOrUrl'
+          e.response?.data.error === 'missingTitle'
         ) {
-          notiDispatch({ type: 'error', payload: 'title and url required' })
+          notiDispatch({
+            type: 'error',
+            payload:
+              'title is required and cannot contain only spaces or non-characters',
+          })
+        } else if (
+          e instanceof AxiosError &&
+          e.response?.data.error === 'missingUrl'
+        ) {
+          notiDispatch({
+            type: 'error',
+            payload:
+              'url is required and cannot contain only spaces or non-characters',
+          })
         } else if (
           e instanceof AxiosError &&
           e.response?.data.error === 'unauthorized'

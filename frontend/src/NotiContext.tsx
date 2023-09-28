@@ -7,11 +7,8 @@ const notiReducer = (
 ) => {
   switch (action.type) {
     case 'login':
-      return { notiType: 'notification', notiMsg: action.payload }
     case 'like':
-      return { notiType: 'notification', notiMsg: action.payload }
     case 'create':
-      return { notiType: 'notification', notiMsg: action.payload }
     case 'delete':
       return { notiType: 'notification', notiMsg: action.payload }
     case 'error':

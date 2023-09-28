@@ -1,13 +1,14 @@
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import blogService from '../services/blogs'
 import { useNotiDispatch } from '../NotiContext'
 import { IUser, IBlog } from '../types'
 
-import { AxiosError } from 'axios'
-import { useParams } from 'react-router-dom'
-
 const Blog = ({ user }: { user: IUser }) => {
+  const navigate = useNavigate()
   const blogId = useParams().id
   const queryClient = useQueryClient()
   const notiDispatch = useNotiDispatch()
@@ -33,9 +34,6 @@ const Blog = ({ user }: { user: IUser }) => {
         e.response?.data.error === `missingUpdatedBlogObject`
       ) {
         notiDispatch({ type: 'error', payload: `Missing request.body` })
-        setTimeout(() => {
-          notiDispatch({ type: 'reset', payload: '' })
-        }, 5000)
       } else if (
         e instanceof AxiosError &&
         e.response?.data.error === `unableToLike`
@@ -44,10 +42,10 @@ const Blog = ({ user }: { user: IUser }) => {
           type: 'error',
           payload: `Unable to like: Blog may not exist!`,
         })
-        setTimeout(() => {
-          notiDispatch({ type: 'reset', payload: '' })
-        }, 5000)
       }
+      setTimeout(() => {
+        notiDispatch({ type: 'reset', payload: '' })
+      }, 5000)
     },
   })
 
@@ -71,6 +69,7 @@ const Blog = ({ user }: { user: IUser }) => {
       )
 
       notiDispatch({ type: 'delete', payload: `Deleted ${blogTitle}!` })
+      navigate('/')
       setTimeout(() => {
         notiDispatch({ type: 'reset', payload: '' })
       }, 5000)
@@ -122,6 +121,37 @@ const Blog = ({ user }: { user: IUser }) => {
         )
       )
     },
+    onError: (e: unknown) => {
+      if (
+        e instanceof AxiosError &&
+        e.response?.data.error === `missingBlogId`
+      ) {
+        notiDispatch({
+          type: 'error',
+          payload: `Unable to identify the id of commented blog`,
+        })
+      } else if (
+        e instanceof AxiosError &&
+        e.response?.data.error === `missingComment`
+      ) {
+        notiDispatch({
+          type: 'error',
+          payload: `Cannot leave empty comments`,
+        })
+      } else if (
+        e instanceof AxiosError &&
+        e.response?.data.error === `nonExistentBlog`
+      ) {
+        notiDispatch({
+          type: 'error',
+          payload: `The blog non-existent/may be deleted elsewhere.`,
+        })
+      }
+
+      setTimeout(() => {
+        notiDispatch({ type: 'reset', payload: '' })
+      }, 5000)
+    },
   })
 
   const comment = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -131,9 +161,6 @@ const Blog = ({ user }: { user: IUser }) => {
     const formElements = target.elements
     const elementArray = [...formElements] as HTMLInputElement[]
     const comment = elementArray[0].value
-
-    console.log('comment Blog.tsx', comment)
-    console.log('blog', blog)
 
     await commentMutation.mutateAsync({ blog: blog, comment: comment })
 

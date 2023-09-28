@@ -2,6 +2,7 @@ import { Dispatch, useEffect } from 'react'
 import { useReducer, createContext, useContext, PropsWithChildren } from 'react'
 
 import { IUser } from './types'
+import blogService from './services/blogs'
 
 const loginReducer = (
   state: IUser | null,
@@ -37,10 +38,11 @@ export const useLoginDispatch = () => {
   return valueAndDispatch.loginDataDispatch
 }
 
-const localStorageLogger = () => {
+const getLocalStorageUser = () => {
   const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
   if (loggedUserJSON) {
     const user = JSON.parse(loggedUserJSON)
+    if (user) blogService.setToken(user.token)
     return user
   }
   return null
@@ -50,7 +52,7 @@ export const LoginContextProvider = (props: PropsWithChildren) => {
   const [loginData, loginDataDispatch] = useReducer(
     loginReducer,
     null,
-    localStorageLogger
+    getLocalStorageUser
   )
 
   useEffect(() => {

@@ -7,7 +7,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1c3RraWRuZXkiLCJpZCI6IjY0YTFkN2M5ZDcyZTg3Mjg1N2I0MThiYiIsImlhdCI6MTY5Mzk2MzEzOH0.GwcxNvnsXdLBNsHMe-ajUTlxNz8ktaAKfQK-e-ZD7kE
 
 {
-    "title": "Test authorization 25.9",
+    "title": "Test authorization 26.9",
     "author": "Bunny",
     "url": "www.memesfsf.com"
 }

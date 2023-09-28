@@ -4,6 +4,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import React from 'react'
+import { Form, Button } from 'react-bootstrap'
 
 import loginService from '../services/login'
 import blogService from '../services/blogs'
@@ -57,8 +59,6 @@ const LoginForm = () => {
     },
   })
 
-  ///// HANDLE LOGIN /////
-
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -76,17 +76,19 @@ const LoginForm = () => {
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        username
-        <input id="username" placeholder="username" />
-        <br />
-        password
-        <input id="password" type="password" placeholder="password" />
-        <br />
-        <button id="login-button" type="submit">
-          login
-        </button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username: </Form.Label>
+          <input id="username" placeholder="username" />
+          <br />
+          <Form.Label>password: </Form.Label>
+          <input id="password" type="password" placeholder="password" />
+          <br />
+          <Button variant="primary" type="submit">
+            login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

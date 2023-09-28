@@ -35,42 +35,44 @@ const App = () => {
   const padding = { padding: 5 }
 
   return (
-    <Router>
-      <Notification />
+    <div className="container">
+      <Router>
+        <Notification />
 
-      {!loginValue && <LoginForm />}
+        {!loginValue && <LoginForm />}
 
-      {loginValue && (
-        <>
-          <Navbar bg="dark" variant="dark">
-            <Nav className="me-auto">
-              <Nav.Link href="#" as="span">
-                <Link style={padding} to="/">
-                  Blogs
-                </Link>
-              </Nav.Link>
-              <Nav.Link href="#" as="span">
-                <Link style={padding} to="/users">
-                  Users
-                </Link>
-              </Nav.Link>
-              <Nav.Link href="#" as="span">
-                <UserLoggedIn user={loginValue} />
-              </Nav.Link>
-            </Nav>
-          </Navbar>
+        {loginValue && (
+          <>
+            <Navbar bg="dark" variant="dark">
+              <Nav className="me-auto">
+                <Nav.Link href="#" as="span">
+                  <Link style={padding} to="/">
+                    Blogs
+                  </Link>
+                </Nav.Link>
+                <Nav.Link href="#" as="span">
+                  <Link style={padding} to="/users">
+                    Users
+                  </Link>
+                </Nav.Link>
+                <Nav.Link href="#" as="span">
+                  <UserLoggedIn user={loginValue} />
+                </Nav.Link>
+              </Nav>
+            </Navbar>
 
-          <h2>blog app</h2>
-          <br />
-          <Routes>
-            <Route path="/users" element={<Users />} />
-            <Route path="/" element={<Blogs />} />
-            <Route path="/blogs/:id" element={<Blog user={loginValue} />} />
-            <Route path="/users/:id" element={<User />} />
-          </Routes>
-        </>
-      )}
-    </Router>
+            <h2>blog app</h2>
+            <br />
+            <Routes>
+              <Route path="/users" element={<Users />} />
+              <Route path="/" element={<Blogs />} />
+              <Route path="/blogs/:id" element={<Blog user={loginValue} />} />
+              <Route path="/users/:id" element={<User />} />
+            </Routes>
+          </>
+        )}
+      </Router>
+    </div>
   )
 }
 

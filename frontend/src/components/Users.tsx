@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
 import { IUser } from '../types'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const Users = () => {
   ///////////////////INITIAL DATA LOADING////////////////////
@@ -19,7 +20,7 @@ const Users = () => {
   return (
     <div className="user-list">
       <h2>Users</h2>
-      <table>
+      <Table striped>
         <tbody>
           <tr>
             <th></th>
@@ -40,7 +41,7 @@ const Users = () => {
               </tr>
             ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

@@ -38,8 +38,12 @@ blogsRouter.post('/', async (request, response) => {
   }
 
   const body = request.body
-  if (!body.title || !body.url) {
-    return response.status(400).json({ error: 'missingTitleOrUrl' }).end()
+  if (!body.title || !body.title.replace(/\s/g, '').length) {
+    return response.status(400).json({ error: 'missingTitle' }).end()
+  }
+
+  if (!body.url || !body.url.replace(/\s/g, '').length) {
+    return response.status(400).json({ error: 'missingUrl' }).end()
   }
 
   const user = await User.findById(decodedToken.id)
@@ -90,11 +94,17 @@ blogsRouter.delete('/', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
   const blog = request.body
-  if (!blog)
-    response.status(404).json({ error: 'missingUpdatedBlogObject' }).end()
+  if (!blog) {
+    return response
+      .status(404)
+      .json({ error: 'missingUpdatedBlogObject' })
+      .end()
+  }
 
   const blogId = request.params.id
-  if (!blogId) response.status(401).json({ error: 'missingBlogId' }).end()
+  if (!blogId) {
+    return response.status(401).json({ error: 'missingBlogId' }).end()
+  }
 
   const returnedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
@@ -106,7 +116,9 @@ blogsRouter.put('/:id', async (request, response) => {
     }
   )
 
-  if (!returnedBlog) response.status(404).json({ error: `unableToLike` }).end()
+  if (!returnedBlog) {
+    return response.status(404).json({ error: `unableToLike` }).end()
+  }
 
   await returnedBlog.populate('user', 'username name id')
   response.json(returnedBlog)
@@ -117,13 +129,16 @@ blogsRouter.post('/:id/comments', async (request, response) => {
   if (!blogId) response.status(401).json({ error: 'missingBlogId' }).end()
 
   const body = request.body
+  const comment = body.comment
 
-  if (!body.comment)
-    response.status(400).json({ error: `missingComment` }).end()
+  if (!comment || !comment.replace(/\s/g, '').length) {
+    return response.status(400).json({ error: `missingComment` }).end()
+  }
 
   const blog = await Blog.findById(blogId)
-  if (!blog)
+  if (!blog) {
     return response.status(401).json({ error: 'nonExistentBlog' }).end()
+  }
 
   // using $set allows updating specific fiels without replacing the entire document
 
