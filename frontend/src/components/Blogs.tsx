@@ -8,13 +8,6 @@ import NewBlogForm from './NewBlogForm'
 import blogService from '../services/blogs'
 
 const Blogs = () => {
-  const style = {
-    border: 1,
-    borderStyle: 'solid',
-    paddingTop: 5,
-    margin: 5,
-  }
-
   ///// LOADING DATA /////
 
   const { data: blogsData, isLoading } = useQuery({
@@ -29,20 +22,34 @@ const Blogs = () => {
   if (!blogs) return <></>
 
   return (
-    <div>
+    <>
       <Togglable buttonLabel="create new blog">
         <NewBlogForm />
       </Togglable>
-      {blogs
-        .sort((a: IBlog, b: IBlog) => b.likes! - a.likes!)
-        .map((blog: IBlog) => (
-          <div style={style} key={blog.id}>
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title} {blog.author}
+      <div className="list-group">
+        {blogs
+          .sort((a: IBlog, b: IBlog) => b.likes! - a.likes!)
+          .map((blog: IBlog) => (
+            <Link
+              to={`/blogs/${blog.id}`}
+              key={blog.id}
+              className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            >
+              <span>
+                {blog.title} <span className="tab-space"></span>
+                {blog.author && (
+                  <span>
+                    by <b>{blog.author}</b>
+                  </span>
+                )}
+              </span>
+              <span className="badge bg-primary rounded-pill">
+                {blog.likes} Likes
+              </span>
             </Link>
-          </div>
-        ))}
-    </div>
+          ))}
+      </div>
+    </>
   )
 }
 

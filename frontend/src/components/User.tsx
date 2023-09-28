@@ -20,12 +20,17 @@ const User = () => {
   if (!user) return null
   return (
     <>
-      <h2>{user.name}</h2>
+      <div className="mt-4">
+        <h3>{user.name}</h3>
+      </div>
+
       <br />
-      <h4>added blogs</h4>
-      <ul>
+      <h5>Added Blogs</h5>
+      <ul className="list-group list-group-flush">
         {user.blogs.map((blog: IBlog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <li key={blog.id} className="list-group-item">
+            {blog.title}
+          </li>
         ))}
       </ul>
     </>

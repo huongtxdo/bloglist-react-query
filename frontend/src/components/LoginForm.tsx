@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import React from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 
 import loginService from '../services/login'
 import blogService from '../services/blogs'
@@ -74,22 +74,37 @@ const LoginForm = () => {
 
   ///// RETURN /////
   return (
-    <div>
-      <h2>Login</h2>
-      <Form onSubmit={handleLogin}>
-        <Form.Group>
-          <Form.Label>username: </Form.Label>
-          <input id="username" placeholder="username" />
-          <br />
-          <Form.Label>password: </Form.Label>
-          <input id="password" type="password" placeholder="password" />
-          <br />
-          <Button variant="primary" type="submit">
-            login
-          </Button>
-        </Form.Group>
-      </Form>
-    </div>
+    <Container>
+      <Row className="justify-content-center">
+        <Col xs={12} md={6}>
+          <div className="text-center">
+            <h2>Login</h2>
+          </div>
+          <Form onSubmit={handleLogin}>
+            <Form.Group>
+              <Form.Label>username: </Form.Label>
+              <input
+                id="username"
+                className="form-control"
+                placeholder="username"
+              />
+              <br />
+              <Form.Label>password: </Form.Label>
+              <input
+                id="password"
+                className="form-control"
+                type="password"
+                placeholder="password"
+              />
+              <br />
+              <Button variant="primary" type="submit" className="btn-block">
+                login
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 

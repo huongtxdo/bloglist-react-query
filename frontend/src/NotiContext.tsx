@@ -11,6 +11,8 @@ const notiReducer = (
     case 'create':
     case 'delete':
       return { notiType: 'notification', notiMsg: action.payload }
+    case 'logout':
+      return { notiType: 'logoutNoti', notiMsg: action.payload }
     case 'error':
       return { notiType: 'error', notiMsg: action.payload }
     case 'reset':

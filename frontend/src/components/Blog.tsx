@@ -186,31 +186,51 @@ const Blog = ({ user }: { user: IUser }) => {
 
   return (
     <div className="blog">
-      <h3 style={{ paddingBottom: 15 }}>
-        {blog.title} {blog.author}
+      <h3>
+        {blog.title} <span className="tab-space"></span>
+        {blog.author && (
+          <span>
+            by <b>{blog.author}</b>
+          </span>
+        )}
       </h3>
 
       <div className="view-info">
         <a href={blog.url}>{blog.url}</a>
         <br />
-        likes {blog.likes}
-        <button id="like-button" onClick={() => incrementLikes(blog)}>
-          like
+        <span className="text-muted">Likes: {blog.likes}</span>
+        <button
+          className="btn btn-outline-success btn-sm"
+          onClick={() => incrementLikes(blog)}
+        >
+          Like
         </button>
         <br />
-        added by {blog.user?.name} <br />
+        <span className="text-muted">Added by: {blog.user?.name}</span>
+        <br />
         {blog.user?.id === user.id && (
-          <button onClick={() => deleteOne(blog)}>remove</button>
+          <button
+            className="btn btn-outline-danger btn-sm"
+            onClick={() => deleteOne(blog)}
+          >
+            remove
+          </button>
         )}
       </div>
 
-      <div style={{ paddingTop: 15 }}>
-        <h5>comments</h5>
+      <div className="mt-4">
+        <h5>Comments</h5>
         <form onSubmit={comment}>
-          <input type="text" />
-          <button type="submit">add comment</button>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add a comment"
+          />
+          <button type="submit" className="btn btn-outline-dark btn-sm">
+            Add Comment
+          </button>
         </form>
-        <ul>
+        <ul className="list-unstyled">
           {blog.comments.map((comment: string, index: number) => (
             <li key={index}>{comment}</li>
           ))}

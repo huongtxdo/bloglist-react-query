@@ -1,7 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { Nav, Navbar } from 'react-bootstrap'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import './index.css'
 import { useLoginValue } from './LoginContext.tsx'
 
 import Blogs from './components/Blogs.tsx'
@@ -25,17 +24,14 @@ const App = () => {
     return <button onClick={deleteAllBlogs}>delete all blogs</button>
   }
   */
-
-  // const style = {
-  //   background: '#bac3d1',
-  //   margin: 'auto',
-  //   width: '467',
-  //   height: 40,
-  // }
-  const padding = { padding: 5 }
+  const titleStyle = {
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '36px',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+  }
 
   return (
-    <div className="container">
+    <Container>
       <Router>
         <Notification />
 
@@ -44,35 +40,31 @@ const App = () => {
         {loginValue && (
           <>
             <Navbar bg="dark" variant="dark">
-              <Nav className="me-auto">
-                <Nav.Link href="#" as="span">
-                  <Link style={padding} to="/">
-                    Blogs
-                  </Link>
-                </Nav.Link>
-                <Nav.Link href="#" as="span">
-                  <Link style={padding} to="/users">
-                    Users
-                  </Link>
-                </Nav.Link>
-                <Nav.Link href="#" as="span">
+              <Nav className="mr-auto">
+                <Nav.Link href="/">Blogs</Nav.Link>
+                <Nav.Link href="/users">Users</Nav.Link>
+              </Nav>
+              <Nav className="ml-auto">
+                <Nav.Link>
                   <UserLoggedIn user={loginValue} />
                 </Nav.Link>
               </Nav>
             </Navbar>
 
-            <h2>blog app</h2>
-            <br />
+            <div className="mb-4 mt-4">
+              <h2 style={titleStyle}>Blog App</h2>
+            </div>
+
             <Routes>
-              <Route path="/users" element={<Users />} />
               <Route path="/" element={<Blogs />} />
+              <Route path="/users" element={<Users />} />
               <Route path="/blogs/:id" element={<Blog user={loginValue} />} />
               <Route path="/users/:id" element={<User />} />
             </Routes>
           </>
         )}
       </Router>
-    </div>
+    </Container>
   )
 }
 

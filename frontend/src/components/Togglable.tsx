@@ -12,7 +12,7 @@ const Togglable = (props: { children: ReactNode; buttonLabel: string }) => {
   }
 
   return (
-    <div>
+    <div className="mb-3">
       <div className="toggleCancel" style={showWhenVisible}>
         {props.children}
         <button onClick={toggleVisibility}>cancel</button>

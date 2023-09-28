@@ -20,11 +20,11 @@ const Users = () => {
   return (
     <div className="user-list">
       <h2>Users</h2>
-      <Table striped>
+      <Table className="table table-striped">
         <tbody>
           <tr>
-            <th></th>
-            <th>blogs created</th>
+            <th scope="col"></th>
+            <th scope="col">Blogs created</th>
           </tr>
           {users
             .sort((a: IUser, b: IUser) => {
@@ -35,7 +35,12 @@ const Users = () => {
             .map((user: IUser) => (
               <tr key={user.id}>
                 <td>
-                  <Link to={`/users/${user.id}`}>{user.name}</Link>
+                  <Link
+                    to={`/users/${user.id}`}
+                    className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                  >
+                    {user.name}
+                  </Link>
                 </td>
                 <td>{user.blogs.length}</td>
               </tr>
