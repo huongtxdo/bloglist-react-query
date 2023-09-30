@@ -8,8 +8,8 @@ import Users from './components/Users.tsx'
 import Blog from './components/Blog.tsx'
 import User from './components/User.tsx'
 import Notification from './components/Notification'
-import LoginForm from './components/LoginForm'
 import UserLoggedIn from './components/UserLoggedIn.tsx'
+import LoginAndRegister from './components/LoginAndRegister.tsx'
 
 const App = () => {
   const loginValue = useLoginValue()
@@ -35,7 +35,7 @@ const App = () => {
       <Router>
         <Notification />
 
-        {!loginValue && <LoginForm />}
+        {!loginValue && <LoginAndRegister />}
 
         {loginValue && (
           <>

@@ -9,6 +9,7 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+
 import { ICredentials, IUser } from '../types'
 
 import { useNotiDispatch } from '../NotiContext'
@@ -33,7 +34,6 @@ const LoginForm = () => {
       const user: IUser | undefined = queryClient.getQueryData(['user'])
 
       blogService.setToken(user!.token)
-      // window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
 
       loginDispatch({
         type: 'login',
@@ -48,10 +48,13 @@ const LoginForm = () => {
       }, 5000)
     },
     onError: (e: unknown) => {
-      if (e instanceof AxiosError)
+      if (
+        e instanceof AxiosError &&
+        e.response?.data.error === 'invalidUsernameOrPassword'
+      )
         notiDispatch({
           type: 'error',
-          payload: `Login failed`,
+          payload: `Login failed: Wrong username or password`,
         })
       setTimeout(() => {
         notiDispatch({ type: 'reset', payload: '' })
@@ -82,14 +85,14 @@ const LoginForm = () => {
           </div>
           <Form onSubmit={handleLogin}>
             <Form.Group>
-              <Form.Label>username: </Form.Label>
+              <Form.Label>Username: </Form.Label>
               <input
                 id="username"
                 className="form-control"
                 placeholder="username"
               />
               <br />
-              <Form.Label>password: </Form.Label>
+              <Form.Label>Password: </Form.Label>
               <input
                 id="password"
                 className="form-control"
@@ -98,7 +101,7 @@ const LoginForm = () => {
               />
               <br />
               <Button variant="primary" type="submit" className="btn-block">
-                login
+                Login
               </Button>
             </Form.Group>
           </Form>

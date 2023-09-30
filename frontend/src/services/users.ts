@@ -6,5 +6,16 @@ const getAll = async () => {
   return response.data
 }
 
-export default { getAll }
+interface ICreatePara {
+  username: string
+  password: string
+  name: string
+}
+
+const create = async (newUser: ICreatePara) => {
+  const response = await axios.post(baseUrl, newUser)
+  return response.data
+}
+
+export default { getAll, create }
 

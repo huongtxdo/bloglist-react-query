@@ -7,6 +7,7 @@ const notiReducer = (
 ) => {
   switch (action.type) {
     case 'login':
+    case 'register':
     case 'like':
     case 'create':
     case 'delete':

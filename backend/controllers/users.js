@@ -16,11 +16,13 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, password, name } = request.body
 
-  // console.log('request----------------', request)
   if (password.length < 3) {
-    return response.status(400).json({
-      error: 'password must be at least 3 characters',
-    })
+    return response
+      .status(400)
+      .json({
+        error: 'passwordMinLength3',
+      })
+      .end()
   }
 
   const saltRounds = 10
@@ -34,3 +36,4 @@ usersRouter.post('/', async (request, response) => {
 })
 
 module.exports = usersRouter
+
