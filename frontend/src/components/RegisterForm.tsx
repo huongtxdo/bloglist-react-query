@@ -30,6 +30,14 @@ const RegisterForm = () => {
           type: 'error',
           payload: `Register failed: Password must be at least 3 characters`,
         })
+      } else if (
+        e instanceof AxiosError &&
+        e.response?.data.error === 'existingUsername'
+      ) {
+        notiDispatch({
+          type: 'error',
+          payload: `Register failed: This username is not available`,
+        })
       }
       setTimeout(() => {
         notiDispatch({ type: 'reset', payload: '' })
