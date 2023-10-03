@@ -1,5 +1,5 @@
-import { useLoginDispatch } from '../LoginContext.tsx'
-import { useNotiDispatch } from '../NotiContext.tsx'
+import { useLoginDispatch } from '../contexts/LoginContext.tsx'
+import { useNotiDispatch } from '../contexts/NotiContext.tsx'
 
 import blogService from '../services/blogs.ts'
 import { IUser } from '../types.tsx'

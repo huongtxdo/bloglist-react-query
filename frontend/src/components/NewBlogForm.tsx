@@ -7,7 +7,7 @@ import {
 
 import blogService from '../services/blogs'
 import { IBlog } from '../types'
-import { useNotiDispatch } from '../NotiContext'
+import { useNotiDispatch } from '../contexts/NotiContext'
 import { AxiosError } from 'axios'
 
 const NewBlogForm = () => {
@@ -79,10 +79,6 @@ const NewBlogForm = () => {
     const author = elementArray[1].value
     const url = elementArray[2].value
 
-    // THIS ALSO WORKS! But title, author and url get red underscores
-    // const title = event.target.title.value
-    // const author = event.target.author.value
-    // const url = event.target.url.value
     mutateAsync({
       title,
       author,

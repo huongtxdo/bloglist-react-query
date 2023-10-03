@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 import blogService from '../services/blogs'
-import { useNotiDispatch } from '../NotiContext'
+import { useNotiDispatch } from '../contexts/NotiContext'
 import { IUser, IBlog } from '../types'
 
 const Blog = ({ user }: { user: IUser }) => {
@@ -170,19 +170,15 @@ const Blog = ({ user }: { user: IUser }) => {
   ///// LOADING DATA /////
 
   const { data, isLoading } = useQuery({
-    queryKey: ['blogs'],
-    queryFn: () => blogService.getAll(),
+    queryKey: ['blogs', blogId],
+    queryFn: () => blogService.getOne(blogId!),
   })
 
   if (isLoading) return <div>Loading...</div>
 
-  const blogs = data
+  const blog = data
 
-  if (!blogs) return null
-
-  const blog = blogs.find((blog: IBlog) => blog.id === blogId)
-
-  if (!blog) return <></>
+  if (!blog) return null
 
   return (
     <div className="blog">

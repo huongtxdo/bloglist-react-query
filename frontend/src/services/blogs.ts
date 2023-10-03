@@ -16,6 +16,11 @@ const getAll = async () => {
   return response.data
 }
 
+const getOne = async (id: string) => {
+  const response = await axios.get(`${baseUrl}/${id}`)
+  return response.data
+}
+
 const create = async (newObject: IBlog) => {
   const config = {
     headers: { Authorization: token },
@@ -61,6 +66,7 @@ const comment = async ({ blog, comment }: ICommentParameters) => {
 export default {
   setToken,
   getAll,
+  getOne,
   create,
   deleteOne,
   deleteAll,

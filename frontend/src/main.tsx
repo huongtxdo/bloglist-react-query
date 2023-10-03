@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { NotiContextProvider } from './NotiContext'
-import { LoginContextProvider } from './LoginContext'
+import { NotiContextProvider } from './contexts/NotiContext'
+import { LoginContextProvider } from './contexts/LoginContext'
 import App from './App'
 
 const queryClient = new QueryClient({

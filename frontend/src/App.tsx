@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 
-import { useLoginValue } from './LoginContext.tsx'
+import { useLoginValue } from './contexts/LoginContext.tsx'
 
 import Blogs from './components/Blogs.tsx'
 import Users from './components/Users.tsx'

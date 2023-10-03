@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap'
 
-import { useNotiValue } from '../NotiContext'
+import { useNotiValue } from '../contexts/NotiContext'
 
 const Notification = () => {
   const notification = useNotiValue()

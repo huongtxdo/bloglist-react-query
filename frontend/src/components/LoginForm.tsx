@@ -12,8 +12,8 @@ import blogService from '../services/blogs'
 
 import { ICredentials, IUser } from '../types'
 
-import { useNotiDispatch } from '../NotiContext'
-import { useLoginDispatch } from '../LoginContext'
+import { useNotiDispatch } from '../contexts/NotiContext'
+import { useLoginDispatch } from '../contexts/LoginContext'
 
 const LoginForm = () => {
   const queryClient = useQueryClient()

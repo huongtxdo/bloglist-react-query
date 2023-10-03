@@ -1,7 +1,7 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import { useMutation } from '@tanstack/react-query'
 
-import { useNotiDispatch } from '../NotiContext'
+import { useNotiDispatch } from '../contexts/NotiContext'
 
 import userService from '../services/users'
 import { AxiosError } from 'axios'
