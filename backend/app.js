@@ -39,6 +39,7 @@ app.use('/api/login', loginRouter)
 // For production build, we catch-all => redirect all of our server requests to /index.html
 // Any request made will respond with index.html, then fetch any js resources we need
 // React Router will then take over and load the appropriate view
+// https://ui.dev/react-router-cannot-get-url-refresh
 const path = require('path')
 const buildPath = path.resolve(__dirname, 'dist')
 app.get('*', (req, res) => {
