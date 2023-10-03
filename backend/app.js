@@ -32,10 +32,19 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use(middleware.tokenExtractor)
-// app.use(middleware.userExtractor) => we can register a middleware for a specific set of routes as below
 app.use('/api/blogs', middleware.userExtractor, blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+
+// For production build, we catch-all => redirect all of our server requests to /index.html
+// Any request made will respond with index.html, then fetch any js resources we need
+// React Router will then take over and load the appropriate view
+const path = require('path')
+const buildPath = path.resolve(__dirname, 'dist')
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'))
+})
+//////////////////////////////////////////////////////
 
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing')
