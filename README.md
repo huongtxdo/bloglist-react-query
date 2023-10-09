@@ -1,4 +1,4 @@
-# A bloglist using react query
+# A blog app using react query
 
 An application where users can add new or delete their blogs, and like blogs. 
 
