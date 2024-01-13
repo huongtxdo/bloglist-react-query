@@ -1,7 +1,5 @@
 const { Schema, model } = require('mongoose')
-// import { Schema, model } from 'mongoose'
 const uniqueValidator = require('mongoose-unique-validator')
-// import uniqueValidator from 'mongoose-unique-validator'
 
 const userSchema = new Schema({
   username: {
@@ -37,3 +35,4 @@ userSchema.plugin(uniqueValidator)
 const User = model('User', userSchema)
 
 module.exports = User
+
