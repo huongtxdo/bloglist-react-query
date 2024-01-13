@@ -1,9 +1,9 @@
-import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { NotiContextProvider } from './contexts/NotiContext'
-import { LoginContextProvider } from './contexts/LoginContext'
-import App from './App'
+import { NotiProvider } from './contexts/NotiContext';
+import { LoginContextProvider } from './contexts/LoginContext';
+import App from './App';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,15 +11,15 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <NotiContextProvider>
+  <NotiProvider>
     <LoginContextProvider>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
     </LoginContextProvider>
-  </NotiContextProvider>
-)
+  </NotiProvider>
+);
 

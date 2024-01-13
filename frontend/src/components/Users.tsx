@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
 
-import userService from '../services/users'
-import { IUser } from '../types'
-import { Link } from 'react-router-dom'
-import { Table } from 'react-bootstrap'
+import userService from '../services/users';
+import { IUser } from '../types';
+import { Link } from 'react-router-dom';
+import { Table } from 'react-bootstrap';
 
 const Users = () => {
   ///////////////////INITIAL DATA LOADING////////////////////
@@ -11,26 +11,28 @@ const Users = () => {
   const { data: usersData, isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => userService.getAll(),
-  })
+  });
 
-  if (isLoading) return <div>Loading data ... </div>
+  if (isLoading) return <div>Loading data ... </div>;
 
-  const users = usersData
+  const users = usersData;
 
   return (
     <div className="user-list">
       <h2>Users</h2>
-      <Table className="table table-striped">
-        <tbody>
+      <Table striped bordered hover>
+        <thead>
           <tr>
-            <th scope="col"></th>
-            <th scope="col">Blogs created</th>
+            <th></th>
+            <th className="text-center">Blogs created</th>
           </tr>
+        </thead>
+        <tbody>
           {users
             .sort((a: IUser, b: IUser) => {
-              if (a.name! < b.name!) return -1
-              else if (a.name! > b.name!) return 1
-              return 0
+              if (a.name! < b.name!) return -1;
+              else if (a.name! > b.name!) return 1;
+              return 0;
             })
             .map((user: IUser) => (
               <tr key={user.id}>
@@ -42,14 +44,14 @@ const Users = () => {
                     {user.name}
                   </Link>
                 </td>
-                <td>{user.blogs.length}</td>
+                <td className="text-center">{user.blogs.length}</td>
               </tr>
             ))}
         </tbody>
       </Table>
     </div>
-  )
-}
+  );
+};
 
-export default Users
+export default Users;
 

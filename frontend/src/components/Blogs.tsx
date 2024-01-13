@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useQuery } from '@tanstack/react-query'
-import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
-import { IBlog } from '../types'
-import Togglable from './Togglable'
-import NewBlogForm from './NewBlogForm'
-import blogService from '../services/blogs'
+import { IBlog } from '../types';
+import Togglable from './Togglable';
+import { NewBlogForm } from './NewBlogForm';
+import blogService from '../services/blogs';
 
 const Blogs = () => {
   ///// LOADING DATA /////
@@ -13,13 +13,13 @@ const Blogs = () => {
   const { data: blogsData, isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: () => blogService.getAll(),
-  })
+  });
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading...</div>;
 
-  const blogs = blogsData
+  const blogs = blogsData;
 
-  if (!blogs) return <></>
+  if (!blogs) return <></>;
 
   return (
     <>
@@ -50,8 +50,8 @@ const Blogs = () => {
           ))}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Blogs
+export default Blogs;
 

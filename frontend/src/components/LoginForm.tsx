@@ -1,51 +1,45 @@
-import {
-  UseMutationResult,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import React from 'react'
-import { Form, Button, Container, Row, Col } from 'react-bootstrap'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useRef, FormEvent } from 'react';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
-import loginService from '../services/login'
-import blogService from '../services/blogs'
+import loginService from '../services/login';
+import blogService from '../services/blogs';
 
-import { ICredentials, IUser } from '../types'
+import { IUser } from '../types';
 
-import { useNotiDispatch } from '../contexts/NotiContext'
-import { useLoginDispatch } from '../contexts/LoginContext'
+import { useNotiDispatch } from '../contexts/NotiContext';
+import { useLoginDispatch } from '../contexts/LoginContext';
 
 const LoginForm = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const notiDispatch = useNotiDispatch();
+  const loginDispatch = useLoginDispatch();
 
-  const notiDispatch = useNotiDispatch()
-  const loginDispatch = useLoginDispatch()
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   ///// MUTATION /////
 
-  const loginMutation: UseMutationResult<
-    unknown,
-    unknown,
-    ICredentials,
-    unknown
-  > = useMutation(loginService.login, {
+  const loginMutation = useMutation({
+    mutationFn: loginService.login,
     onSuccess: (loginUser: IUser) => {
-      queryClient.setQueryData(['user'], loginUser)
-      const user: IUser | undefined = queryClient.getQueryData(['user'])
+      queryClient.setQueryData(['user'], loginUser);
+      const user: IUser | undefined = queryClient.getQueryData(['user']);
 
-      blogService.setToken(user!.token)
+      blogService.setToken(user!.token);
 
       loginDispatch({
         type: 'login',
         payload: user!,
-      })
+      });
       notiDispatch({
         type: 'login',
         payload: `Login successful!`,
-      })
+      });
       setTimeout(() => {
-        notiDispatch({ type: 'reset', payload: '' })
-      }, 5000)
+        notiDispatch({ type: 'reset', payload: '' });
+      }, 5000);
     },
     onError: (e: unknown) => {
       if (
@@ -55,25 +49,20 @@ const LoginForm = () => {
         notiDispatch({
           type: 'error',
           payload: `Login failed: Wrong username or password`,
-        })
+        });
       setTimeout(() => {
-        notiDispatch({ type: 'reset', payload: '' })
-      }, 5000)
+        notiDispatch({ type: 'reset', payload: '' });
+      }, 5000);
     },
-  })
+  });
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const target = event.target as HTMLFormElement
-    const formElements = target.elements
-    const elementArray = [...formElements] as HTMLInputElement[]
-
-    const username = elementArray[0].value
-    const password = elementArray[1].value
-
-    loginMutation.mutateAsync({ username, password })
-  }
+  const handleLogin = (event: FormEvent) => {
+    event.preventDefault();
+    loginMutation.mutate({
+      username: usernameRef.current!.value,
+      password: passwordRef.current!.value,
+    });
+  };
 
   ///// RETURN /////
   return (
@@ -84,32 +73,34 @@ const LoginForm = () => {
             <h2>Login</h2>
           </div>
           <Form onSubmit={handleLogin}>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Username: </Form.Label>
               <input
-                id="username"
                 className="form-control"
-                placeholder="username"
+                id="username"
+                ref={usernameRef}
+                placeholder="Username"
               />
-              <br />
+            </Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Password: </Form.Label>
               <input
-                id="password"
                 className="form-control"
+                id="password"
                 type="password"
-                placeholder="password"
+                ref={passwordRef}
+                placeholder="Password"
               />
-              <br />
-              <Button variant="primary" type="submit" className="btn-block">
-                Login
-              </Button>
             </Form.Group>
+            <Button variant="primary" type="submit" className="mb-3">
+              Login
+            </Button>
           </Form>
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;
 

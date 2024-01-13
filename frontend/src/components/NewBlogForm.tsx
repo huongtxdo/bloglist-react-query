@@ -1,111 +1,97 @@
-import React from 'react'
-import {
-  UseMutationResult,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FormEvent, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import blogService from '../services/blogs';
+import { AxiosError } from 'axios';
+import { useNotiDispatch } from '../contexts/NotiContext';
 
-import blogService from '../services/blogs'
-import { IBlog } from '../types'
-import { useNotiDispatch } from '../contexts/NotiContext'
-import { AxiosError } from 'axios'
+const baseUrl = '/blogs';
 
-const NewBlogForm = () => {
-  const queryClient = useQueryClient()
-  const notiDispatch = useNotiDispatch()
+export const NewBlogForm = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const notiDispatch = useNotiDispatch();
 
-  ///// MUTATION /////
+  const titleRef = useRef<HTMLInputElement>(null);
+  const authorRef = useRef<HTMLInputElement>(null);
+  const urlRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync }: UseMutationResult<unknown, unknown, IBlog, unknown> =
-    useMutation(blogService.create, {
-      onSuccess: (newBlog: IBlog) => {
-        const blogs: IBlog[] | undefined = queryClient.getQueryData(['blogs'])
-        queryClient.setQueryData(['blogs'], blogs!.concat(newBlog))
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      queryClient.setQueryData(['blogs', newBlog.id], newBlog);
+      queryClient.invalidateQueries(['blogs'], { exact: true });
+      navigate(`${baseUrl}/${newBlog.id}`);
+      notiDispatch({
+        type: 'create',
+        payload: `A new blog '${newBlog.title}' ${
+          newBlog.author ? `by ${newBlog.author}` : ''
+        } added!`,
+      });
+      setTimeout(() => {
+        notiDispatch({ type: 'reset', payload: '' });
+      }, 5000);
+    },
+    onError: (e: unknown) => {
+      if (
+        e instanceof AxiosError &&
+        e.response?.data.error === 'missingTitle'
+      ) {
         notiDispatch({
-          type: 'create',
-          payload: `A new blog '${newBlog.title}' ${
-            newBlog.author ? `by ${newBlog.author}` : ''
-          } added!`,
-        })
-        setTimeout(() => {
-          notiDispatch({ type: 'reset', payload: '' })
-        }, 5000)
-      },
-      onError: (e: unknown) => {
-        if (
-          e instanceof AxiosError &&
-          e.response?.data.error === 'missingTitle'
-        ) {
-          notiDispatch({
-            type: 'error',
-            payload:
-              'title is required and cannot contain only spaces or non-characters',
-          })
-        } else if (
-          e instanceof AxiosError &&
-          e.response?.data.error === 'missingUrl'
-        ) {
-          notiDispatch({
-            type: 'error',
-            payload:
-              'url is required and cannot contain only spaces or non-characters',
-          })
-        } else if (
-          e instanceof AxiosError &&
-          e.response?.data.error === 'unauthorized'
-        ) {
-          notiDispatch({ type: 'error', payload: 'Unauthorized' })
-        }
-        setTimeout(() => {
-          notiDispatch({ type: 'reset', payload: '' })
-        }, 5000)
-      },
-    })
+          type: 'error',
+          payload:
+            'title is required and cannot contain only spaces or non-characters',
+        });
+      } else if (
+        e instanceof AxiosError &&
+        e.response?.data.error === 'missingUrl'
+      ) {
+        notiDispatch({
+          type: 'error',
+          payload:
+            'url is required and cannot contain only spaces or non-characters',
+        });
+      } else if (
+        e instanceof AxiosError &&
+        e.response?.data.error === 'unauthorized'
+      ) {
+        notiDispatch({ type: 'error', payload: 'Unauthorized' });
+      }
+      setTimeout(() => {
+        notiDispatch({ type: 'reset', payload: '' });
+      }, 5000);
+    },
+  });
 
-  const addNewBlog = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    // THIS WORKS! But others recommend not to use. They didn't explain why!//
-    // const title = (document.getElementById('title') as HTMLInputElement).value
-    // const author = (document.getElementById('author') as HTMLInputElement).value
-    // const url = (document.getElementById('url') as HTMLInputElement).value
-
-    // THIS WORKS! Src: Medium
-    const target = event.target as HTMLFormElement
-    const formElements = target.elements
-    const elementArray = [...formElements] as HTMLInputElement[]
-
-    const title = elementArray[0].value
-    const author = elementArray[1].value
-    const url = elementArray[2].value
-
-    mutateAsync({
-      title,
-      author,
-      url,
-    })
-
-    elementArray[0].value = ''
-    elementArray[1].value = ''
-    elementArray[2].value = ''
-  }
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    createBlogMutation.mutate({
+      title: titleRef.current!.value,
+      author: authorRef.current!.value,
+      url: urlRef.current!.value,
+    });
+  };
 
   return (
-    <form onSubmit={addNewBlog}>
-      title:
-      <input id="title" placeholder="add title" />
-      <br />
-      author:
-      <input id="author" placeholder="add author" />
-      <br />
-      url:
-      <input id="url" placeholder="add url" />
-      <br />
-      <button id="create-blog-button" type="submit">
-        create
-      </button>
-    </form>
-  )
-}
-export default NewBlogForm
+    <>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="title">Title </label>
+          <input id="title" ref={titleRef} />
+        </div>
+        <div>
+          <label htmlFor="author">Author </label>
+          <input id="author" ref={authorRef} />
+        </div>
+        <div>
+          <label htmlFor="url">Url </label>
+          <input id="url" ref={urlRef} />
+        </div>
+        <button disabled={createBlogMutation.isLoading}>
+          {createBlogMutation.isLoading ? 'Loading...' : 'Create'}
+        </button>
+      </form>
+    </>
+  );
+};
 
